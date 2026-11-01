@@ -1,0 +1,152 @@
+header {
+    width: 100%;
+    min-height: 60px;
+    height: 8vw;
+    max-height: 600px;
+
+    justify-content: center;
+    align-items: center;
+    display: flex;
+
+    background-color: #333;
+    color: white;
+}
+
+body{
+    margin: 0%;
+    background-color: #333;
+}
+h1{
+    font-size: xx-large;
+}
+/*ボディー全体のデザイン*/
+.container{
+    display: flex;
+}
+.left{
+    flex: 1;
+    border: 4px white;
+}
+.center{
+    flex: 8;
+}
+.right{
+    flex: 1;
+}
+
+/*積算データエリア*/
+.estimatedData_area{
+    border-radius: 20px;
+    padding: 3%;
+    height: auto;
+
+    background-color: white;
+    text-align: center;
+
+    font-size: 30px;
+    color: gray;
+}
+.estimatedData_flex{
+    padding: 5px;
+    display: flex;
+    gap: 10px;
+
+}
+.estimatedData_flex_u{
+    padding: 5px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+.estimatedData_flex_u_u{
+    flex: 4;
+    font-size: 40px;
+}
+.estimatedData_flex_u_uu{
+    flex: 1;
+    font-size: 15px;
+}
+
+/*ベットボックス*/
+.betBox{
+    margin: 10px 0 0 0;
+    border-radius: 20px 20px 0 0;
+    padding: 10px;
+    display: flex;
+    background-color: green;
+}
+.betBox_u{
+    flex: 1;
+    color: white;
+    text-align: center;
+}
+#bet_value{
+    color: black;
+}
+
+/*カードの合計値*/
+.numBox{
+    margin: 0%;
+    display: flex;
+    background-color: green;
+}
+.numBox_u{
+    flex: 1;
+    color: white;
+    text-align: center;
+}
+
+/*カードフィールド*/
+.field{
+    width: 100%;
+    height: 400px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    background-color: green;
+}
+.field_u{
+    flex: 1;
+    display: flex;
+    margin: 0%;
+    height: 195px;
+
+    justify-content: center;
+}
+.card{
+    margin: 10px;
+    width: 100px;
+    height: 160px;
+    border-radius: 10px;
+    background-color: white;
+
+    text-align: center;
+    font-size: 70px;
+    line-height: 160px;
+}
+.card_back{
+    color: transparent;
+}
+.card_black{
+    color: black;
+}
+.card_red{
+    color: red;
+}
+
+/*ボタンボックス*/
+.buttonBox{
+    margin: 0 0 10px 0;
+    padding: 10px;
+    border-radius: 0 0 20px 20px;
+    display: flex;
+
+    justify-content: center;
+
+    background-color: green;
+}
+.buttonBox_u{
+    flex: 1;
+}

@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title id="title">Black_Jack</title>
+        <link rel="icon" href="image/titleImage.jpg">
+
+        <link rel="stylesheet" href="./style.css">
+    </head>
+
+    <header id="header">
+        <h1>Black Jack</h1>
+    </header>
+
+    <body>
+
+        <div class="container">
+            <div class="left"></div>
+
+            <div class="center">
+                <!--積算データ表示-->
+                <div class="estimatedData_area" id="estimetedData">
+                    <div>積算データ</div>
+                    <div class="estimatedData_flex">
+                        <div class="estimatedData_flex_u">
+                            <div class="estimatedData_flex_u_u" id="turn_display">1</div>
+                            <div class="estimatedData_flex_u_uu">ターン数</div>
+                        </div>
+                        <div class="estimatedData_flex_u">
+                            <div class="estimatedData_flex_u_u" id="cpuWinTime">0</div>
+                            <div class="estimatedData_flex_u_uu">敗北数</div>
+                        </div>
+                        <div class="estimatedData_flex_u">
+                            <div class="estimatedData_flex_u_u" id="playerWinTime">0</div>
+                            <div class="estimatedData_flex_u_uu">勝利数</div>
+                        </div>
+                        <div class="estimatedData_flex_u">
+                            <div class="estimatedData_flex_u_u" id="drawTime">0</div>
+                            <div class="estimatedData_flex_u_uu">引き分け</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!--ベットボックス-->
+                <div class="betBox">
+                    <div class="betBox_u" id="playerPoint">0</div>
+                    <input class="betBox_u" type="number" id="bet_value" min="1" placeholder="掛け金の入力">
+                    <div class="betBox_u" id="betPoint_display">0</div>
+                </div>
+        
+                <!--トランプの内容-->
+                <div class="numBox" id="num_box">
+                    <div class="numBox_u" id="cpNum">
+                        <div id="cpuCardSum"></div>
+                        <div id="cpuCard_list"></div>
+                    </div>
+                    <div class="numBox_u" id="playerNum">
+                        <div id="playerCardSum"></div>
+                        <div id="playerCard_list"></div>
+                    </div>
+                </div>
+
+                <div class="field" id="field">
+                    <div class="field_u" id="cpu_field"></div>
+                    <div class="field_u" id="player_field"></div>
+                </div>
+        
+                <!--ボタン-->
+                <div class="buttonBox" id="button_box">
+                    <button class="buttonBox_u" id="reset_button" class="btn_1" onclick="allReset()">Reset</button>
+                    <button class="buttonBox_u" id="bet_button" class="btn_1" onclick="betFase()">Bet</button>
+                    <button class="buttonBox_u" id="start_button" class="btn_1" onclick="playGame()">Start</button>
+            
+                    <button class="buttonBox_u" id="hit_button" onclick="hit()">Hit</button>
+                    <button class="buttonBox_u" id="stand_button" onclick="stand()">Stand</button>
+                    <button class="buttonBox_u" id="doubleDown_button" onclick="doubleDown()">Double Down</button>
+                    <button class="buttonBox_u" id="shuffle_button" onclick="shuffleDeck()">Shuffle</button>
+                    <button class="buttonBox_u" id="split_button" onclick="split()">Split</button>
+                    <!--<button class="buttonBox_u" onclick="gene()">genelate</button>-->
+                </div>
+            </div>
+
+            <div class="right"></div>
+        </div>
+
+        <script>
+
+            let turn = 0;
+
+            let cpuWinTime = 0;
+            let playerWinTime = 0;
+            let drawTime = 0;
+            let playerPoint = 0;
+
+            let betPoint = 0;
+
+            let cpuCard_list = [];
+            let playerCard_list = [];
+
+            let cpuCardSum = 0;
+            let playerCardSum = 0;
+
+            let deck = [101,102,103,104,105,106,107,108,109,110,111,112,113,
+                        201,202,203,204,205,206,207,208,209,210,211,212,213,
+                        301,302,303,304,305,306,307,308,309,310,311,312,313,
+                        401,402,403,404,405,406,407,408,409,410,411,412,413,
+                        ]
+
+            let playdeck = [...deck];
+
+            //積算データのリセット
+            allReset();
+
+            document.getElementById("shuffle_button").disabled = false;
+
+            function allReset() {
+                playdeck = [...deck];
+                shuffleDeck();
+                reset();
+
+                turn = 0;
+                playerWinTime = 0;
+                cpuWinTime = 0;
+                drawTime = 0;
+                playerPoint = 500;
+
+                document.getElementById("turn_display").textContent = 0;
+                document.getElementById("cpuWinTime").textContent = 0;
+                document.getElementById("playerWinTime").textContent = 0;
+                document.getElementById("drawTime").textContent = 0;
+                document.getElementById("playerPoint").textContent = playerPoint;
+
+                document.getElementById("bet_value").readOnly = false;
+            }
+            //各ターンごとのリセット
+            function reset() {
+                cpuCard_list = [];
+                playerCard_list = [];
+                cpuCardSum = 0;
+                playerCardSum = 0;
+                betPoint = null;
+
+                document.getElementById("start_button").disabled = true;
+                document.getElementById("hit_button").disabled = true;
+                document.getElementById("stand_button").disabled = true;
+                document.getElementById("doubleDown_button").disabled = true;
+                document.getElementById("shuffle_button").disabled = true;
+                document.getElementById("bet_button").disabled = false;
+                document.getElementById("split_button").disabled = true;
+
+                document.getElementById("turn_display").textContent = turn;
+                //document.getElementById("playerCard_list").textContent = playerCard_list;
+                //document.getElementById("cpuCard_list").textContent = cpuCard_list;
+                document.getElementById("playerCardSum").textContent = playerCardSum;
+                document.getElementById("cpuCardSum").textContent = cpuCardSum;
+                document.getElementById("playerPoint").textContent = playerPoint;
+                document.getElementById("betPoint_display").textContent = betPoint;
+
+                cardRemove();
+            }
+
+            // ゲーム開始
+            function betFase(){
+                reset();
+                
+                if(pointCheck(playerPoint,Number(document.getElementById("bet_value").value)) == true){
+                    document.getElementById("bet_button").disabled = true;
+                    document.getElementById("start_button").disabled = false;
+                    document.getElementById("bet_value").readOnly = true;
+
+                    betPoint = Number(document.getElementById("bet_value").value);
+                    playerPoint = playerPoint - betPoint;
+
+                    document.getElementById("playerPoint").textContent = playerPoint;
+                    document.getElementById("betPoint_display").textContent = betPoint;
+                }else{
+                    alert("money is not enough")
+                }
+            }
+            function playGame() {
+                document.getElementById("start_button").disabled = true;
+
+                turnAdd();
+
+                if (playdeck.length < 10) {
+                    shuffleDeck();
+                }
+
+                console.log(playdeck);
+
+                playerCard_list.push(playdeck.shift());
+                genelateCard(playerCard_list,"p");
+                playerCard_list.push(playdeck.shift());
+                genelateCard(playerCard_list,"p");
+
+                playerCardSum = totalSumProcess(playerCard_list);
+
+                cpuCard_list.push(playdeck.shift());
+                genelateCard(cpuCard_list,"c");
+
+                cpuCardSum = totalSumProcess(cpuCard_list);
+                document.getElementById("cpuCardSum").textContent = cpuCardSum;
+
+                cpuCard_list.push(playdeck.shift());
+                genelateCard([500],"c");
+
+                cpuCardSum = totalSumProcess(cpuCard_list);
+
+                //document.getElementById("playerCard_list").textContent = playerCard_list;
+                //document.getElementById("cpuCard_list").textContent = cpuCard_list;
+                document.getElementById("playerCardSum").textContent = playerCardSum;
+                //document.getElementById("cpuCardSum").textContent = cpuCardSum;
+
+                document.getElementById("hit_button").disabled = false;
+                document.getElementById("stand_button").disabled = false;
+                
+                if(pointCheck(playerPoint,betPoint) == true){
+                    document.getElementById("doubleDown_button").disabled = false;
+                }
+
+                //同じ数字のカードが2枚出た場合の処理(後で実装)
+                //splitCheck();
+            }
+            function hit() {
+                document.getElementById("doubleDown_button").disabled = true;
+                playerCard_list.push(playdeck.shift());
+                //document.getElementById("playerCard_list").textContent = playerCard_list;
+                playerCardSum = totalSumProcess(playerCard_list);
+                document.getElementById("playerCardSum").textContent = playerCardSum;
+
+                genelateCard(playerCard_list, "p")
+
+                if (playerCardSum > 21) {
+                    burst();
+                }
+            } 
+            function stand(){
+                document.getElementById("hit_button").disabled = true;
+                document.getElementById("stand_button").disabled = true;
+                document.getElementById("doubleDown_button").disabled = true;
+
+                cpuTurn();
+            }
+            function burst(){
+                document.getElementById("hit_button").disabled = true;
+                document.getElementById("stand_button").disabled = true;
+                document.getElementById("doubleDown_button").disabled = true;
+
+                //document.getElementById("playerCard_list").textContent = playerCard_list;
+                document.getElementById("playerCardSum").textContent = playerCardSum;
+
+                console.log("pleyer burst")
+
+                cpuTurn();
+            }
+            function cpuTurn(){
+                document.querySelectorAll(".card_back").forEach(element => {
+                    element.remove();
+                });
+                
+                document.getElementById("cpuCardSum").textContent = cpuCardSum;
+                genelateCard(cpuCard_list,"c");
+
+                while(cpuCardSum < 17){
+                    cpuCard_list.push(playdeck.shift());
+                    cpuCardSum = totalSumProcess(cpuCard_list);
+                    //document.getElementById("cpuCard_list").textContent = cpuCard_list;
+                    genelateCard(cpuCard_list,"c");
+                    document.getElementById("cpuCardSum").textContent = cpuCardSum;   
+                }
+
+                if(cpuCardSum > 21){
+                    // CPUがバーストした場合の処理
+                    console.log("cpu burst")
+                    if(playerCardSum <= 21){
+                        playerWin();
+                    } else {
+                        draw();
+                    }
+                }else{
+                    if(playerCardSum > 21){
+                        playerLose();
+                    }else if(playerCardSum > cpuCardSum){
+                        playerWin();
+                    }else if(playerCardSum < cpuCardSum){
+                        playerLose();
+                    }else{
+                        draw();
+                    }
+                }
+            }
+            // ダブルダウンの処理
+            function doubleDown(){
+                document.getElementById("hit_button").disabled = true;
+                document.getElementById("stand_button").disabled = true;
+                document.getElementById("doubleDown_button").disabled = true;
+
+                playerPoint = playerPoint - betPoint;
+                document.getElementById("playerPoint").textContent = playerPoint;
+
+                betPoint = betPoint*2
+                document.getElementById("betPoint_display").textContent = betPoint;
+
+                playerCard_list.push(playdeck.shift());
+                playerCardSum = totalSumProcess(playerCard_list);
+                //document.getElementById("playerCard_list").textContent = playerCard_list;
+                document.getElementById("playerCardSum").textContent = playerCardSum;
+
+                genelateCard(playerCard_list,"p");
+                
+                cpuTurn();
+            }
+            //ゲーム終了時の処理
+            function playerWin(){
+                playerWinTime++;
+                playerPoint = playerPoint + 2*betPoint
+                document.getElementById("playerWinTime").textContent = playerWinTime;
+                console.log("player win");
+                end();
+            }
+            function playerLose(){
+                cpuWinTime++;
+                document.getElementById("cpuWinTime").textContent = cpuWinTime;
+                console.log("player lose");
+                end();
+            }
+            function draw(){
+                drawTime++
+                playerPoint = playerPoint + betPoint;
+                document.getElementById("drawTime").textContent = drawTime;
+                console.log("draw game");
+                end();
+            }
+            function end(){
+                console.log("game set");
+                document.getElementById("playerPoint").textContent = playerPoint;
+                document.getElementById("betPoint_display").textContent = null;
+                document.getElementById("bet_button").disabled = false;
+                document.getElementById("shuffle_button").disabled = false;
+                document.getElementById("bet_value").readOnly = false;
+            }
+
+            //ターン
+            function turnAdd() {
+                turn++;
+                document.getElementById("turn_display").textContent = turn;
+            }
+            
+            //シャッフル
+            function shuffleDeck() {
+                playdeck = [...deck];
+                for (let i = playdeck.length - 1; i > 0; i--) {
+                     const j = Math.floor(Math.random() * (i + 1));
+
+                    [playdeck[i], playdeck[j]] = [playdeck[j], playdeck[i]];
+                }
+                console.log("Deck shuffled");
+            }
+
+            //スプリット関係(後で実装)
+            function splitCheck(card_list){
+                if(card_list[0] == card_list[1]){
+                    return true;
+                }else{
+                    return false;
+                }
+            }
+            function split(){
+                
+            }
+            
+            //カードの合計値の計算
+            function sumScore(card_list) {
+                card_list = card_list.reduce((total, num) => total + (num % 100 > 10 ? 10 : num % 100), 0);
+                return card_list;
+            }
+            function totalSumProcess(card_list){
+                let j = 0;
+                let i = 0;
+                for(let u = card_list.length-1; u >= 0; u--){
+                    if(card_list[u]%100 == 1){
+                        j++;
+                    }
+                }
+                if(j > 0 && sumScore(card_list) + 10 <= 21){
+                        i = sumScore(card_list) + 10;
+                }else{
+                    i = sumScore(card_list);
+                }
+                return i;
+            }
+            
+            //ベットの計算
+            function pointCheck(nowMoney,betMoney){
+                if (nowMoney < betMoney||betMoney < 0){
+                    return false;
+                }else{
+                    return true;
+                }
+            }
+            
+            //トランプカードの表示
+            function genelateCard(list, p){
+                let num = list[list.length - 1]
+                const card = document.createElement("div");
+                card.classList.add("card");
+
+                if(Math.floor(num/100) >= 5){
+                    card.classList.add("card_back");
+                }else if(Math.floor(num/100) >= 3){
+                    card.classList.add("card_red");
+                }else{
+                    card.classList.add("card_black");
+                }
+
+                card.textContent = num % 100;
+                if (p == "p"){   
+                    document.getElementById("player_field").appendChild(card);
+                }else{
+                    document.getElementById("cpu_field").appendChild(card);
+                }
+            }
+            function cardRemove(){
+                document.getElementById("player_field").innerHTML = "";
+                document.getElementById("cpu_field").innerHTML = "";
+            }
+
+            function gene(){
+                let num = [500];
+                let p = "player";
+                genelateCard(num,p);
+            }
+
+            //ハイローシステム
+        </script>
+    </body>
+</html>
