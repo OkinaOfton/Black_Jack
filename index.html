@@ -69,15 +69,16 @@
                 <!--ボタン-->
                 <div class="buttonBox" id="button_box">
                     <button class="buttonBox_u" id="reset_button" class="btn_1" onclick="allReset()">Reset</button>
+                    <button class="buttonBox_u" id="shuffle_button" onclick="shuffleDeck()">Shuffle</button>
                     <button class="buttonBox_u" id="bet_button" class="btn_1" onclick="betFase()">Bet</button>
                     <button class="buttonBox_u" id="start_button" class="btn_1" onclick="playGame()">Start</button>
             
                     <button class="buttonBox_u" id="hit_button" onclick="hit()">Hit</button>
                     <button class="buttonBox_u" id="stand_button" onclick="stand()">Stand</button>
                     <button class="buttonBox_u" id="doubleDown_button" onclick="doubleDown()">Double Down</button>
-                    <button class="buttonBox_u" id="shuffle_button" onclick="shuffleDeck()">Shuffle</button>
-                    <button class="buttonBox_u" id="split_button" onclick="split()">Split</button>
+                    <!--<button class="buttonBox_u" id="split_button" onclick="split()">Split</button>-->
                     <!--<button class="buttonBox_u" onclick="gene()">genelate</button>-->
+                    <input class="buttonBox_u" id="amountOfDeck" type="number" min="1" max="10" value="1">
                 </div>
             </div>
 
@@ -105,7 +106,7 @@
                         201,202,203,204,205,206,207,208,209,210,211,212,213,
                         301,302,303,304,305,306,307,308,309,310,311,312,313,
                         401,402,403,404,405,406,407,408,409,410,411,412,413,
-                        ]
+                        ];
 
             let playdeck = [...deck];
 
@@ -147,7 +148,7 @@
                 document.getElementById("doubleDown_button").disabled = true;
                 document.getElementById("shuffle_button").disabled = true;
                 document.getElementById("bet_button").disabled = false;
-                document.getElementById("split_button").disabled = true;
+                //document.getElementById("split_button").disabled = true;
 
                 document.getElementById("turn_display").textContent = turn;
                 //document.getElementById("playerCard_list").textContent = playerCard_list;
@@ -350,6 +351,7 @@
             //シャッフル
             function shuffleDeck() {
                 playdeck = [...deck];
+                amountOfDeck(Number(document.getElementById("amountOfDeck").value));
                 for (let i = playdeck.length - 1; i > 0; i--) {
                      const j = Math.floor(Math.random() * (i + 1));
 
@@ -424,6 +426,12 @@
             function cardRemove(){
                 document.getElementById("player_field").innerHTML = "";
                 document.getElementById("cpu_field").innerHTML = "";
+            }
+
+            function amountOfDeck(amount){
+                for(let i = amount-1 ; i > 0 ; i--){
+                    playdeck = playdeck.concat([...deck]);
+                }
             }
 
             function gene(){
