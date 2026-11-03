@@ -46,7 +46,8 @@
                 <div class="betBox">
                     <div class="betBox_u" id="playerPoint">0</div>
                     <input class="betBox_u" type="number" id="bet_value" min="1" placeholder="掛け金の入力">
-                    <div class="betBox_u" id="betPoint_display">0</div>
+                    <!--<div class="betBox_u" id="betPoint_display">0</div>-->
+                    <div class="betBox_u" id="hiLowSystem_display">0</div>
                 </div>
         
                 <!--トランプの内容-->
@@ -102,6 +103,8 @@
             let cpuCardSum = 0;
             let playerCardSum = 0;
 
+            let hiLow_value = 0;
+
             let deck = [101,102,103,104,105,106,107,108,109,110,111,112,113,
                         201,202,203,204,205,206,207,208,209,210,211,212,213,
                         301,302,303,304,305,306,307,308,309,310,311,312,313,
@@ -156,7 +159,7 @@
                 document.getElementById("playerCardSum").textContent = playerCardSum;
                 document.getElementById("cpuCardSum").textContent = cpuCardSum;
                 document.getElementById("playerPoint").textContent = playerPoint;
-                document.getElementById("betPoint_display").textContent = betPoint;
+                //document.getElementById("betPoint_display").textContent = betPoint;
 
                 cardRemove();
             }
@@ -174,7 +177,7 @@
                     playerPoint = playerPoint - betPoint;
 
                     document.getElementById("playerPoint").textContent = playerPoint;
-                    document.getElementById("betPoint_display").textContent = betPoint;
+                    //document.getElementById("betPoint_display").textContent = betPoint;
                 }else{
                     alert("money is not enough")
                 }
@@ -301,7 +304,7 @@
                 document.getElementById("playerPoint").textContent = playerPoint;
 
                 betPoint = betPoint*2
-                document.getElementById("betPoint_display").textContent = betPoint;
+                //document.getElementById("betPoint_display").textContent = betPoint;
 
                 playerCard_list.push(playdeck.shift());
                 playerCardSum = totalSumProcess(playerCard_list);
@@ -335,8 +338,12 @@
             }
             function end(){
                 console.log("game set");
+
+                hiLow_system(playerCard_list);
+                hiLow_system(cpuCard_list);
+
                 document.getElementById("playerPoint").textContent = playerPoint;
-                document.getElementById("betPoint_display").textContent = null;
+                //document.getElementById("betPoint_display").textContent = null;
                 document.getElementById("bet_button").disabled = false;
                 document.getElementById("shuffle_button").disabled = false;
                 document.getElementById("bet_value").readOnly = false;
@@ -357,6 +364,8 @@
 
                     [playdeck[i], playdeck[j]] = [playdeck[j], playdeck[i]];
                 }
+                hiLow_value = 0;
+                document.getElementById("hiLowSystem_display").textContent = hiLow_value;
                 console.log("Deck shuffled");
             }
 
@@ -441,6 +450,19 @@
             }
 
             //ハイローシステム
+
+            function hiLow_system(list){
+                for(let i = list.length; i > 0; i--){
+                    let j = list[i-1] % 100;
+                    if(j == 1 || j >= 10){
+                        hiLow_value = hiLow_value - 1;
+                    }else if(j < 7){
+                        hiLow_value = hiLow_value + 1;
+                    }
+                }
+                let u = Math.floor(hiLow_value/playdeck.length * 10000) / 10000;
+                document.getElementById("hiLowSystem_display").textContent = u;
+            }
         </script>
     </body>
 </html>
